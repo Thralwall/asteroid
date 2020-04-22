@@ -43,10 +43,26 @@ class Sprite
 	public BufferedImage getImage() { return image; }	
 	
 	public void updateImage(Graphics g) { //FIX
-		g.drawImage(getImage(), (int)posX, (int)posY, null);
+		g.drawImage(getImage(), (int)posX - width/2, (int)posY - height/2, null);
 	}
 		
-	public void updateState(int width, int height, double dt) {} // FIX use radius instead of width and height
+	public void updateState(int width, int height, double dt) {
+		posX = posX + velX*dt;
+        posY = posY + velY*dt;
+
+        if(posX > width) {
+			posX = 0;
+		}
+        if(posX < 0) {
+            posX = width;
+        }
+		if(posY > height) {
+			posY = 0;
+		}
+        if(posY < 0) {
+            posY = height;
+		}
+	}
 	
 	public boolean overlaps(Sprite s) { //FIX use radius for collision
 		return false;
@@ -60,6 +76,8 @@ class Sprite
 		// calculate the new image's dimensions
 		int transWidth = (int)(height * Math.abs(Math.sin(theta)) + width * Math.abs(Math.cos(theta)));
 		int transHeight = (int)(width * Math.abs(Math.sin(theta)) + height * Math.abs(Math.cos(theta)));
+		this.width = transWidth;
+		this.height = transHeight;
 
 		// Create new image with rotated image embedded
 		BufferedImage rotated = new BufferedImage(transWidth , transHeight , BufferedImage.TYPE_INT_ARGB);

@@ -12,6 +12,10 @@ class Controller implements MouseListener, KeyListener
     View view;
     Thread move;
     Thread draw;
+    static public boolean accelerate;
+    static public boolean decelerate;
+    static public boolean rotateCW;
+    static public boolean rotateCCW;
 
     Controller() throws IOException, Exception {
         model = new Model();
@@ -47,7 +51,25 @@ class Controller implements MouseListener, KeyListener
     }
 
 	public void keyTyped(KeyEvent e) {}
-	public void keyPressed(KeyEvent e) {}
-	public void keyReleased(KeyEvent e) {}
+	public void keyPressed(KeyEvent e) {
+        if(e.getKeyChar() == 'W' || e.getKeyChar() == 'w')
+			accelerate = true;
+		if(e.getKeyChar() == 'S' || e.getKeyChar() == 's') 
+            decelerate = true;
+		if(e.getKeyChar() == 'A' || e.getKeyChar() == 'a')
+            rotateCCW = true;
+        if(e.getKeyChar() == 'D' || e.getKeyChar() == 'd')
+            rotateCW = true;
+    }
+	public void keyReleased(KeyEvent e) {
+        if(e.getKeyChar() == 'W' || e.getKeyChar() == 'w')
+			accelerate = false;
+		if(e.getKeyChar() == 'S' || e.getKeyChar() == 's') 
+            decelerate = false;
+		if(e.getKeyChar() == 'A' || e.getKeyChar() == 'a')
+            rotateCCW = false;
+        if(e.getKeyChar() == 'D' || e.getKeyChar() == 'd')
+            rotateCW = false;
+    }
 }
 

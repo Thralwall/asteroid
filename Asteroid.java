@@ -13,20 +13,6 @@ public class Asteroid extends Sprite {
     }
     @Override
     public void updateState(int width, int height, double dt) {
-        posX = posX + velX*dt;
-        posY = posY + velY*dt;
-
-        if(posX > width) {
-			posX = 0;
-		}
-        if(posX < 0) {
-            posX = width;
-        }
-		if(posY > height) {
-			posY = 0;
-		}
-        if(posY < 0) {
-            posY = height;
-        }
+        super.updateState(width, height, dt);
     }
 }
