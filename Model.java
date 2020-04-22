@@ -7,11 +7,12 @@ import java.util.Iterator;
 class Model
 {
 	private static int count = 0;
+    private static long time = System.nanoTime();
 	
     private ArrayList<Sprite> sprites = new ArrayList<Sprite>();
 
     Model() throws IOException {
-		sprites.add(new Ship());
+		sprites.add(new Asteroid(0,0));
     }
 
     public void update(Graphics g) {
@@ -22,33 +23,16 @@ class Model
     	}
     }
     
-    public void addSprite(int x, int y) {
-        sprites.add(new Asteroid());
-        sprites.get(sprites.size()-1).setX(x);
-        sprites.get(sprites.size()-1).setY(y);
+    public void addSprite(double x, double y) {
+        sprites.add(new Asteroid(x,y));
     }
     
     public void updateScene(int width, int height) {
-    	// synchronized(sprites) {
-	    // 	Iterator<Sprite> iter = sprites.iterator();
-	    // 	while (iter.hasNext()) {
-	    // 	    Sprite s = iter.next();
-	    // 	    if((s instanceof RobberCar) && ((RobberCar)s).hasEscaped()) {
-	    // 	    	iter.remove();
-	    // 	    	System.out.println("I'm free!");
-	    // 	    }
-	    // 	}
-	    // 	for(Sprite sprite : sprites) {
-		// 		sprite.updateState(width, height);
-		// 		if(sprite instanceof CopCar) {
-		// 			for(Sprite robber : sprites) {
-		// 				if((robber instanceof RobberCar) && sprite.overlaps(robber)) {
-		// 					((RobberCar)robber).captured();
-		// 				}
-		// 			}
-		// 		}
-		// 	}
-    	// }
+        double dt = ((double)(System.nanoTime()-time)/(double)1e9);
+        for(Sprite sprite : sprites) {
+            sprite.updateState(width, height, dt);  
+        }
+        time = System.nanoTime();
     }
     
     public void initialize() {
