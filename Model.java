@@ -28,11 +28,13 @@ class Model
     }
     
     public void updateScene(int width, int height) {
-        double dt = ((double)(System.nanoTime()-time)/(double)1e9);
-        for(Sprite sprite : sprites) {
-            sprite.updateState(width, height, dt);  
+        synchronized(sprites) {
+            double dt = ((double)(System.nanoTime()-time)/(double)1e9)*2;
+            for(Sprite sprite : sprites) {
+                sprite.updateState(width, height, dt);  
+            }
+            time = System.nanoTime();
         }
-        time = System.nanoTime();
     }
     
     public void initialize() {

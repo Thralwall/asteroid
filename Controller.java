@@ -10,10 +10,16 @@ class Controller implements MouseListener, KeyListener
 {
     Model model;
     View view;
+    Thread move;
+    Thread draw;
 
     Controller() throws IOException, Exception {
         model = new Model();
         view = new View(this);
+        move = new Mover(model, view);
+        draw = new Drawer(view);
+        move.start();
+        draw.start();
     }
 
     public void update(Graphics g) {
@@ -31,10 +37,10 @@ class Controller implements MouseListener, KeyListener
 		view.repaint();
     }
 
-    public void mouseReleased(MouseEvent e) {    }
-    public void mouseEntered(MouseEvent e) {    }
-    public void mouseExited(MouseEvent e) {    }
-    public void mouseClicked(MouseEvent e) {    }
+    public void mouseReleased(MouseEvent e) {}
+    public void mouseEntered(MouseEvent e) {}
+    public void mouseExited(MouseEvent e) {}
+    public void mouseClicked(MouseEvent e) {}
 
     public static void main(String[] args) throws Exception {
         new Controller();
