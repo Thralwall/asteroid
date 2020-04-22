@@ -12,7 +12,7 @@ class Model
     private ArrayList<Sprite> sprites = new ArrayList<Sprite>();
 
     Model() throws IOException {
-		sprites.add(new Asteroid(0,0));
+		sprites.add(new Ship());
     }
 
     public void update(Graphics g) {

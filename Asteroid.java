@@ -1,4 +1,3 @@
-import java.awt.Graphics;
 import java.util.Random;
 
 public class Asteroid extends Sprite {
