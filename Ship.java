@@ -6,10 +6,11 @@ public class Ship extends Sprite {
     private BufferedImage ogImage;
 
     public Ship() {
-        super("Ship.png",25,25);
+        super("Ship.png");
         ogImage = getImage();
         posX = 100;
         posY = 100;
+        radius = 12;
     }
 
     public void rotate(double deg) {

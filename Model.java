@@ -8,38 +8,44 @@ class Model
 {
 	private static int count = 0;
     private static long time = System.nanoTime();
-	
-    private ArrayList<Sprite> sprites = new ArrayList<Sprite>();
+    private Ship ship = new Ship();
+    private ArrayList<Asteroid> asteroids = new ArrayList<Asteroid>();
 
     Model() throws IOException {
-		sprites.add(new Ship());
+		asteroids.add(new Asteroid(0,0));
     }
 
     public void update(Graphics g) {
-    	synchronized(sprites) {
-			for(Sprite sprite : sprites) {
-				sprite.updateImage(g);
-			}
-    	}
+    	synchronized(asteroids) {
+            synchronized(ship) {
+                ship.updateImage(g);
+                for(Sprite asteroid : asteroids) {
+                    asteroid.updateImage(g);
+                }
+    	    }
+        }
     }
     
     public void addSprite(double x, double y) {
-        sprites.add(new Asteroid(x,y));
+        asteroids.add(new Asteroid(x,y));
     }
     
     public void updateScene(int width, int height) {
-        synchronized(sprites) {
-            double dt = ((double)(System.nanoTime()-time)/(double)1e9)*2;
-            for(Sprite sprite : sprites) {
-                sprite.updateState(width, height, dt);  
+        synchronized(asteroids) {
+            synchronized(ship) {
+                double dt = ((double)(System.nanoTime()-time)/(double)1e9)*2;
+                ship.updateState(width, height, dt);
+                for(Sprite asteroid : asteroids) {
+                    asteroid.updateState(width, height, dt);  
+                }
+                time = System.nanoTime();
             }
-            time = System.nanoTime();
         }
     }
     
     public void initialize() {
-    	sprites.clear();
-    	sprites.add(new Ship());
+    	asteroids.clear();
+    	asteroids.add(new Asteroid(0,0));
     	
     }
 }

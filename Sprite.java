@@ -15,17 +15,18 @@ class Sprite
 	protected double posY;
     protected double velX;
     protected double velY;
+	protected int width;
+	protected int height;
+	protected int radius;
 	private BufferedImage image;
-	private int width;
-	private int height;
 
-	public Sprite(String jpgName, int width, int height) // FIX pass in radius instead of width and height
+	public Sprite(String jpgName) // FIX pass in radius instead of width and height
 	{
 		setImage(jpgName);
 		posX = 0;
 		posY = 0;
-        this.width = width;
-        this.height = height;
+        this.width = image.getWidth();
+        this.height = image.getHeight();
 	}
 	
 	public void setImage(String imagePath) {
@@ -50,21 +51,24 @@ class Sprite
 		posX = posX + velX*dt;
         posY = posY + velY*dt;
 
-        if(posX > width) {
-			posX = 0;
+        if(posX > width + radius) {
+			posX = 0 - radius;
 		}
-        if(posX < 0) {
-            posX = width;
+        if(posX < 0 - radius) {
+            posX = width + radius;
         }
-		if(posY > height) {
-			posY = 0;
+		if(posY > height + radius) {
+			posY = 0 - radius;
 		}
-        if(posY < 0) {
-            posY = height;
+        if(posY < 0 - radius) {
+            posY = height + radius;
 		}
 	}
 	
-	public boolean overlaps(Sprite s) { //FIX use radius for collision
+	public boolean collides(Sprite s) { //FIX use radius for collision
+		if(Math.sqrt(Math.pow(s.posX - posX, 2)+Math.pow(s.posY-posY,2)) < (s.radius + radius)) {
+			System.out.println("hit");
+		}
 		return false;
 	}
 
