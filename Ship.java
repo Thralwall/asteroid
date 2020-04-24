@@ -13,6 +13,8 @@ public class Ship extends Sprite {
         radius = 12;
     }
 
+    public double getRotation() { return theta; }
+
     public void rotate(double deg) {
         double rad = Math.toRadians(deg);
         theta += rad;

@@ -33,7 +33,7 @@ class Controller implements MouseListener, KeyListener
     public void mousePressed(MouseEvent e) {
 		if (SwingUtilities.isLeftMouseButton(e)) {
 			// Gets here is left mouse button was clicked
-			model.addSprite(e.getX(), e.getY());
+			//model.addSprite(e.getX(), e.getY());
 		} else if (SwingUtilities.isRightMouseButton(e))  {
 			// Gets here if right mouse button was clicked
 			model.updateScene(view.getWidth(), view.getHeight());
@@ -50,7 +50,10 @@ class Controller implements MouseListener, KeyListener
         new Controller();
     }
 
-	public void keyTyped(KeyEvent e) {}
+	public void keyTyped(KeyEvent e) {
+        if(e.getKeyChar() == ' ') 
+            model.shoot();
+    }
 	public void keyPressed(KeyEvent e) {
         if(e.getKeyChar() == 'W' || e.getKeyChar() == 'w')
 			accelerate = true;

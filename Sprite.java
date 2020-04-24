@@ -10,6 +10,7 @@ import java.awt.Color;
 
 class Sprite
 {
+	private static int hits;
 	private String jpgName;
 	protected double posX;
 	protected double posY;
@@ -42,6 +43,12 @@ class Sprite
 	}
 
 	public BufferedImage getImage() { return image; }	
+
+	public double getPosX() { return posX; }
+	public double getPosY() { return posY; }
+
+	public double getVelX() { return velX; }
+	public double getVelY() { return velY; }
 	
 	public void updateImage(Graphics g) { //FIX
 		g.drawImage(getImage(), (int)posX - width/2, (int)posY - height/2, null);
@@ -67,7 +74,9 @@ class Sprite
 	
 	public boolean collides(Sprite s) { //FIX use radius for collision
 		if(Math.sqrt(Math.pow(s.posX - posX, 2)+Math.pow(s.posY-posY,2)) < (s.radius + radius)) {
-			System.out.println("hit");
+			System.out.println("hit" + hits);
+			hits++;
+			return true;
 		}
 		return false;
 	}
