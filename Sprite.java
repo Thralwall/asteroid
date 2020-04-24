@@ -24,8 +24,6 @@ class Sprite
 	public Sprite(String jpgName) // FIX pass in radius instead of width and height
 	{
 		setImage(jpgName);
-		posX = 0;
-		posY = 0;
         this.width = image.getWidth();
         this.height = image.getHeight();
 	}

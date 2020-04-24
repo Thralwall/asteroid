@@ -4,6 +4,9 @@ import java.awt.image.BufferedImage;
 public class Ship extends Sprite {
     private double theta; // angle in radians
     private BufferedImage ogImage;
+    private int maxSpeed = 70;
+    private int rotation = 60;
+    private int acceleration = 20;
 
     public Ship() {
         super("Ship.png");
@@ -13,11 +16,11 @@ public class Ship extends Sprite {
         radius = 12;
     }
 
-    public double getRotation() { return theta; }
+    public double getAngle() { return theta; }
 
-    public void rotate(double deg) {
+    public void rotate(double deg, double dt) {
         double rad = Math.toRadians(deg);
-        theta += rad;
+        theta += rad*dt;
         setImage(rotateSprite(ogImage, theta));
     }
 
@@ -27,18 +30,27 @@ public class Ship extends Sprite {
         double accY = acceleration*Math.sin(theta);
         velX = velX + accX*dt;
         velY = velY + accY*dt;
+        // FIX: do trig to find velX velY if speed is too great
+        if(velX > maxSpeed)
+            velX = maxSpeed;
+        if(velY > maxSpeed)
+            velY = maxSpeed;
+        if(velX < -maxSpeed)
+            velX = -maxSpeed;
+        if(velY < -maxSpeed)
+            velY = -maxSpeed;
     }
 
     @Override
     public void updateState(int width, int height, double dt) {
         if(Controller.accelerate == true)
-            accelerate(10,dt);
+            accelerate(acceleration,dt);
         if(Controller.decelerate == true)
-            accelerate(-20,dt);
+            accelerate(-acceleration,dt);
         if(Controller.rotateCCW == true)
-            rotate(-1);
+            rotate(-rotation,dt);
         if(Controller.rotateCW == true)
-            rotate(1);
+            rotate(rotation,dt);
         
         super.updateState(width, height, dt);
     }

@@ -34,7 +34,9 @@ class Model
     }
     
     public void shoot() {
-        bullets.add(new Bullet(ship.getPosX(), ship.getPosY(), ship.getVelX(), ship.getVelY(), ship.getRotation()));
+        synchronized(bullets) {
+            bullets.add(new Bullet(ship.getPosX(), ship.getPosY(), ship.getVelX(), ship.getVelY(), ship.getAngle()));
+        }
     }
     
     public void destroy(double posX, double posY, int size) {

@@ -1,5 +1,5 @@
 public class Bullet extends Sprite {
-    private int speed = 100;
+    private int speed = 150;
     private boolean offScreen;
 
     public Bullet(double posX, double posY, double velX, double velY, double theta) {
