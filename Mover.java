@@ -1,6 +1,7 @@
 public class Mover extends Thread {
     Model model;
     View view;
+    boolean stop = false;
     public Mover(Model model, View view) {
         this.model = model;
         this.view = view;
@@ -8,7 +9,7 @@ public class Mover extends Thread {
 
     @Override
     public void run() {
-        while(true) {
+        while(!stop) {
             model.updateScene(view.getWidth(), view.getHeight());
             try {
                 Thread.sleep(10);
@@ -16,5 +17,8 @@ public class Mover extends Thread {
             catch(InterruptedException e) {}
         }
 
+    }
+    public void stopIt() {
+        stop = true;
     }
 }

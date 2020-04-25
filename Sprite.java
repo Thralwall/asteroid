@@ -4,11 +4,12 @@ import java.awt.Image;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.awt.image.BufferedImage;
 import java.awt.Color;
 
 
-class Sprite
+class Sprite implements Serializable
 {
 	private static int hits;
 	private String jpgName;
@@ -16,20 +17,23 @@ class Sprite
 	protected double posY;
     protected double velX;
     protected double velY;
+	protected double theta; // angle of rotation in radians
 	protected int width;
 	protected int height;
 	protected int radius;
-	private BufferedImage image;
+	private transient BufferedImage image;
 
 	public Sprite(String jpgName)
 	{
 		setImage(jpgName);
+		this.jpgName = jpgName;
         this.width = image.getWidth();
         this.height = image.getHeight();
 	}
 	
 	public void setImage(String imagePath) {
         try {
+			this.jpgName = imagePath;
             image = ImageIO.read(new File(imagePath));
         } catch (IOException ioe) {
             System.out.println("Unable to load image file.");
@@ -56,17 +60,17 @@ class Sprite
 		posX = posX + velX*dt;
         posY = posY + velY*dt;
 
-        if(posX > width + radius) {
-			posX = 0 - radius;
+        if(posX > width + radius - 4) {
+			posX = 0 - radius + 4;
 		}
-        if(posX < 0 - radius) {
-            posX = width + radius;
+        if(posX < 0 - radius + 4) {
+            posX = width + radius - 4;
         }
-		if(posY > height + radius) {
-			posY = 0 - radius;
+		if(posY > height + radius - 4) {
+			posY = 0 - radius + 4;
 		}
-        if(posY < 0 - radius) {
-            posY = height + radius;
+        if(posY < 0 - radius + 4) {
+            posY = height + radius - 4;
 		}
 	}
 	
@@ -101,5 +105,10 @@ class Sprite
 		g2d.drawImage(image,0,0,null);
 		g2d.dispose();
 		return rotated;
+	}
+
+	public void loadSprite() {
+		setImage(jpgName);
+		setImage(rotateSprite(image, theta));
 	}
 }

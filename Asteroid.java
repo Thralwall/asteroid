@@ -8,14 +8,14 @@ public class Asteroid extends Sprite {
         // Only 3 sizes of asteroids. 3 being the largest, 1 being the smallest
         if(size > 3) {
             this.size = 3;
-            setImage("Asteroid"+size+".png");
         }
         else if(size < 1){
             this.size = 1;
-            setImage("Asteroid"+size+".png");
         }
         else
             this.size = size;
+        setImage("Asteroid"+size+".png");
+
         this.posX = posX;
         this.posY = posY;
 
@@ -25,7 +25,8 @@ public class Asteroid extends Sprite {
         velY = (rand.nextDouble()*15)-7.5;
         radius = getImage().getWidth()/2 - 1;
         // set asteroid image to random rotation
-        setImage(rotateSprite(getImage(), (rand.nextDouble() * 2.0 * Math.PI)));
+        theta = rand.nextDouble() * 2.0 * Math.PI;
+        setImage(rotateSprite(getImage(), (theta)));
     }
 
     public int getSize(){ return size; }

@@ -1,5 +1,5 @@
 import java.awt.Graphics;
-import java.io.IOException;
+import java.io.*;
 import java.awt.event.MouseListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -10,12 +10,13 @@ class Controller implements MouseListener, KeyListener
 {
     Model model;
     View view;
-    Thread move;
-    Thread draw;
+    Mover move;
+    Drawer draw;
     static public boolean accelerate;
     static public boolean decelerate;
     static public boolean rotateCW;
     static public boolean rotateCCW;
+    static public boolean paused;
 
     Controller() throws IOException, Exception {
         model = new Model();
@@ -28,6 +29,37 @@ class Controller implements MouseListener, KeyListener
 
     public void updateImage(Graphics g) {
         model.updateImage(g);
+    }
+
+    synchronized private void save() {
+        try {
+            FileOutputStream file = new FileOutputStream("save.out");
+            ObjectOutputStream object = new ObjectOutputStream(file);
+
+            object.writeObject(model);
+        } catch(Exception e) { System.out.println(e); }
+    }
+
+    synchronized private void load() {
+        try {
+            paused = true;
+            move.stopIt();
+            draw.stopIt();
+            FileInputStream file = new FileInputStream("save.out");
+            ObjectInputStream object = new ObjectInputStream(file);
+
+            model = (Model) object.readObject();
+            model.loadSprites();
+            move = new Mover(model, view);
+            draw = new Drawer(view);
+            move.start();
+            draw.start();
+        } catch(Exception e) { System.out.println(e); }
+    }
+    
+    private void pause() {
+        model.setTime();
+        paused = !paused;
     }
 
     public void mousePressed(MouseEvent e) {
@@ -53,6 +85,15 @@ class Controller implements MouseListener, KeyListener
 	public void keyTyped(KeyEvent e) {
         if(e.getKeyChar() == ' ') 
             model.shoot();
+        if(e.getKeyChar() == 'x') {
+            save();
+        }
+        if(e.getKeyChar() == 'v') {
+            load();
+        }
+        if(e.getKeyChar() == 'P' || e.getKeyChar() == 'p') {
+            pause();
+        }
     }
 	public void keyPressed(KeyEvent e) {
         if(e.getKeyChar() == 'W' || e.getKeyChar() == 'w')

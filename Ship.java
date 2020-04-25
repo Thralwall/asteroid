@@ -2,14 +2,13 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 public class Ship extends Sprite {
-    private double theta; // angle in radians
-    private BufferedImage ogImage;
+    private transient BufferedImage ogImage;
     private int maxSpeed = 70;
-    private int rotation = 60;
+    private int rotationSpeed = 60;
     private int acceleration = 20;
 
     public Ship() {
-        super("Ship.png");
+        super("ship.png");
         ogImage = getImage();
         posX = 100;
         posY = 100;
@@ -48,9 +47,9 @@ public class Ship extends Sprite {
         if(Controller.decelerate == true)
             accelerate(-acceleration,dt);
         if(Controller.rotateCCW == true)
-            rotate(-rotation,dt);
+            rotate(-rotationSpeed,dt);
         if(Controller.rotateCW == true)
-            rotate(rotation,dt);
+            rotate(rotationSpeed,dt);
         
         super.updateState(width, height, dt);
     }

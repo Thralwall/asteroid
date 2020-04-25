@@ -27,7 +27,7 @@ public class View extends JFrame implements ActionListener {
         MyPanel panel = new MyPanel(c);
         panel.setBackground(Color.black);
         setTitle("Asteroids+");
-        setSize(8000, 8000);
+        setSize(800, 800);
         getContentPane().add(panel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
