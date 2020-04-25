@@ -17,7 +17,7 @@ public class View extends JFrame implements ActionListener {
 
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
-            controller.update(g);
+            controller.updateImage(g);
             revalidate();
         }
     }
@@ -26,8 +26,8 @@ public class View extends JFrame implements ActionListener {
     public View(Controller c) throws Exception{
         MyPanel panel = new MyPanel(c);
         panel.setBackground(Color.black);
-        setTitle("Assignment 4");
-        setSize(1000, 700);
+        setTitle("Asteroids+");
+        setSize(8000, 8000);
         getContentPane().add(panel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);

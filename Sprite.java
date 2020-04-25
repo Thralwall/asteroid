@@ -21,7 +21,7 @@ class Sprite
 	protected int radius;
 	private BufferedImage image;
 
-	public Sprite(String jpgName) // FIX pass in radius instead of width and height
+	public Sprite(String jpgName)
 	{
 		setImage(jpgName);
         this.width = image.getWidth();
@@ -48,7 +48,7 @@ class Sprite
 	public double getVelX() { return velX; }
 	public double getVelY() { return velY; }
 	
-	public void updateImage(Graphics g) { //FIX
+	public void updateImage(Graphics g) {
 		g.drawImage(getImage(), (int)posX - width/2, (int)posY - height/2, null);
 	}
 		
@@ -70,7 +70,7 @@ class Sprite
 		}
 	}
 	
-	public boolean collides(Sprite s) { //FIX use radius for collision
+	public boolean collides(Sprite s) {
 		if(Math.sqrt(Math.pow(s.posX - posX, 2)+Math.pow(s.posY-posY,2)) < (s.radius + radius)) {
 			System.out.println("hit" + hits);
 			hits++;

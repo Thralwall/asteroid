@@ -26,8 +26,8 @@ class Controller implements MouseListener, KeyListener
         draw.start();
     }
 
-    public void update(Graphics g) {
-        model.update(g);
+    public void updateImage(Graphics g) {
+        model.updateImage(g);
     }
 
     public void mousePressed(MouseEvent e) {

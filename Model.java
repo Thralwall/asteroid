@@ -12,12 +12,15 @@ class Model
     private ArrayList<Asteroid> asteroids = new ArrayList<Asteroid>();
     private ArrayList<Bullet> bullets = new ArrayList<Bullet>();
     private ArrayList<Asteroid> toAdd = new ArrayList<Asteroid>();
+    private int asteroidsShot;
+    private int numAsteroids;
+    private double gameTime;
 
     Model() throws IOException {
 		asteroids.add(new Asteroid(0,0, 3));
     }
 
-    public void update(Graphics g) {
+    public void updateImage(Graphics g) {
     	synchronized(asteroids) {
             synchronized(bullets){
                 synchronized(ship) {
@@ -43,6 +46,7 @@ class Model
         if(size > 1) {
             toAdd.add(new Asteroid(posX, posY, size-1));
             toAdd.add(new Asteroid(posX, posY, size-1));
+            numAsteroids += 2;
         }
     }
     
@@ -51,37 +55,48 @@ class Model
             synchronized(bullets) {
                 synchronized(ship) {
                     double dt = ((double)(System.nanoTime()-time)/(double)1e9)*2;
+                    gameTime += dt;
                     ship.updateState(width, height, dt);
-                    Iterator<Bullet> iterB = bullets.iterator();
-                    while(iterB.hasNext()) {
-                        Bullet bullet = iterB.next();
-                        bullet.updateState(width, height, dt);
-                        if(bullet.isOffScreen())
-                            iterB.remove();
-                    }
-                    Iterator<Asteroid> iterA = asteroids.iterator();
-                    while(iterA.hasNext()) {
-                        Asteroid asteroid = iterA.next();
-                        asteroid.updateState(width, height, dt);
-                        iterB = bullets.iterator();
-                        while(iterB.hasNext()) {
-                            Bullet bullet = iterB.next();
-                            if(asteroid.collides(bullet)) {
-                                destroy(asteroid.getPosX(), asteroid.getPosY(), asteroid.getSize());
-                                iterA.remove();
-                                iterB.remove();
-                            }
-                        }
-                        asteroid.collides(ship);
-                    }
-                    for(Asteroid asteroid : toAdd) {
-                        asteroids.add(asteroid);
-                    }
-                    toAdd.clear();
+                    updateBullets(width, height, dt);
+                    updateAsteroids(width, height, dt);
                     time = System.nanoTime();
                 }
             }
         }
+    }
+
+    private void updateBullets(int width, int height, double dt) {
+        Iterator<Bullet> iter = bullets.iterator();
+            while(iter.hasNext()) {
+                Bullet bullet = iter.next();
+                bullet.updateState(width, height, dt);
+                if(bullet.isOffScreen())
+                    iter.remove();
+            }
+    }
+
+    private void updateAsteroids(int width, int height, double dt) {
+        Iterator<Asteroid> iterA = asteroids.iterator();
+            while(iterA.hasNext()) {
+                Asteroid asteroid = iterA.next();
+                asteroid.updateState(width, height, dt);
+                Iterator<Bullet> iterB = bullets.iterator();
+                while(iterB.hasNext()) {
+                    Bullet bullet = iterB.next();
+                    if(asteroid.collides(bullet)) {
+                        destroy(asteroid.getPosX(), asteroid.getPosY(), asteroid.getSize());
+                        iterA.remove();
+                        iterB.remove();
+                        numAsteroids--;
+                        asteroidsShot++;
+                    }
+                }
+                asteroid.collides(ship);
+            }
+            for(Asteroid asteroid : toAdd) {
+                asteroids.add(asteroid);
+            }
+            toAdd.clear();
     }
     
     public void initialize() {
