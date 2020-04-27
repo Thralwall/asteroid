@@ -30,7 +30,7 @@ class Model implements Serializable
         for(int i = 0; i < 4; i++) {
             asteroids.add(new Asteroid(rand.nextDouble()*800,-7, 3));
         }
-        ammo = new Ammo(rand.nextDouble()*800, (rand.nextDouble()*790) + 10);
+        ammo = new Ammo((rand.nextDouble()*800*0.75) + 800*.125, (rand.nextDouble()*800*0.75) + 800*.125);
     }
 
     public void updateImage(Graphics g) {
@@ -105,7 +105,7 @@ class Model implements Serializable
         if(ship.collides(ammo)) {
             Random rand = new Random();
             ship.addAmmo();
-            ammo = new Ammo(rand.nextDouble()*width,(rand.nextDouble()*height) + 10);
+            ammo = new Ammo((rand.nextDouble()*width*0.75) + width*.125, (rand.nextDouble()*height*0.75) + height*.125);
         }
     }
 
@@ -156,6 +156,7 @@ class Model implements Serializable
 
     public void loadSprites() {
         ship.loadSprite();
+        ammo.loadSprite();
         for(Asteroid asteroid : asteroids)
             asteroid.loadSprite();
         for(Bullet bullet : bullets)
@@ -184,6 +185,6 @@ class Model implements Serializable
         for(int i = 0; i < 4; i++) {
             asteroids.add(new Asteroid(rand.nextDouble()*800,-7, 3));
         }
-        ammo = new Ammo(rand.nextDouble()*800, (rand.nextDouble()*790) + 10);
+        ammo = new Ammo((rand.nextDouble()*width*0.75) + width*.125, (rand.nextDouble()*height*0.75) + height*.125);
     }
 }

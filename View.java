@@ -33,9 +33,38 @@ public class View extends JFrame implements ActionListener {
         addKeyListener(c);
         JMenuBar menuBar = new JMenuBar();
         JMenu menu = new JMenu("Menu");
-        menu.add(new JMenuItem("Puase"));
-        menu.add(new JMenuItem("Save"));
-        menu.add(new JMenuItem("Load"));
+        JMenuItem menuItem = new JMenuItem("Pause/Play");
+        menuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                c.pause();
+            }
+        });
+        menu.add(menuItem);
+
+        menuItem = new JMenuItem("Save");
+        menuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                c.save();
+            }
+        });
+        menu.add(menuItem);
+
+        menuItem = new JMenuItem("Load");
+        menuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                c.load();
+            }
+        });
+        menu.add(menuItem);
+
+        menuItem = new JMenuItem("Reset");
+        menuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                c.reset();
+            }
+        });
+        menu.add(menuItem);
+
         menuBar.add(menu);
         setJMenuBar(menuBar);
     }

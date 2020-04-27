@@ -31,7 +31,7 @@ class Controller implements MouseListener, KeyListener
         model.updateImage(g);
     }
 
-    synchronized private void save() {
+    synchronized public void save() {
         try {
             FileOutputStream file = new FileOutputStream("save.out");
             ObjectOutputStream object = new ObjectOutputStream(file);
@@ -40,7 +40,7 @@ class Controller implements MouseListener, KeyListener
         } catch(Exception e) { System.out.println(e); }
     }
 
-    synchronized private void load() {
+    synchronized public void load() {
         try {
             paused = true;
             move.stopIt();
@@ -57,9 +57,13 @@ class Controller implements MouseListener, KeyListener
         } catch(Exception e) { System.out.println(e); }
     }
     
-    private void pause() {
+    public void pause() {
         model.setTime();
         paused = !paused;
+    }
+
+    public void reset() {
+        model.reset(view.getWidth(), view.getHeight());
     }
 
     public void mousePressed(MouseEvent e) {
@@ -95,7 +99,7 @@ class Controller implements MouseListener, KeyListener
             pause();
         }
         if(e.getKeyChar() == 'R' || e.getKeyChar() == 'r') {
-            model.reset(view.getWidth(), view.getHeight());
+            reset();
         }
     }
 	public void keyPressed(KeyEvent e) {
