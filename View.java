@@ -1,6 +1,5 @@
-import javax.swing.JFrame;
+import javax.swing.*;
 import java.awt.Graphics;
-import javax.swing.JPanel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
@@ -32,6 +31,13 @@ public class View extends JFrame implements ActionListener {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
         addKeyListener(c);
+        JMenuBar menuBar = new JMenuBar();
+        JMenu menu = new JMenu("Menu");
+        menu.add(new JMenuItem("Puase"));
+        menu.add(new JMenuItem("Save"));
+        menu.add(new JMenuItem("Load"));
+        menuBar.add(menu);
+        setJMenuBar(menuBar);
     }
 
     public void actionPerformed(ActionEvent evt) {

@@ -83,7 +83,7 @@ class Controller implements MouseListener, KeyListener
     }
 
 	public void keyTyped(KeyEvent e) {
-        if(e.getKeyChar() == ' ') 
+        if(e.getKeyChar() == ' ' && !model.endGame) 
             model.shoot();
         if(e.getKeyChar() == 'x') {
             save();
@@ -94,16 +94,21 @@ class Controller implements MouseListener, KeyListener
         if(e.getKeyChar() == 'P' || e.getKeyChar() == 'p') {
             pause();
         }
+        if(e.getKeyChar() == 'R' || e.getKeyChar() == 'r') {
+            model.reset(view.getWidth(), view.getHeight());
+        }
     }
 	public void keyPressed(KeyEvent e) {
-        if(e.getKeyChar() == 'W' || e.getKeyChar() == 'w')
-			accelerate = true;
-		if(e.getKeyChar() == 'S' || e.getKeyChar() == 's') 
-            decelerate = true;
-		if(e.getKeyChar() == 'A' || e.getKeyChar() == 'a')
-            rotateCCW = true;
-        if(e.getKeyChar() == 'D' || e.getKeyChar() == 'd')
-            rotateCW = true;
+        if(!model.endGame) {
+            if(e.getKeyChar() == 'W' || e.getKeyChar() == 'w')
+                accelerate = true;
+            if(e.getKeyChar() == 'S' || e.getKeyChar() == 's') 
+                decelerate = true;
+            if(e.getKeyChar() == 'A' || e.getKeyChar() == 'a')
+                rotateCCW = true;
+            if(e.getKeyChar() == 'D' || e.getKeyChar() == 'd')
+                rotateCW = true;
+        }
     }
 	public void keyReleased(KeyEvent e) {
         if(e.getKeyChar() == 'W' || e.getKeyChar() == 'w')

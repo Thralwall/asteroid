@@ -6,12 +6,13 @@ public class Ship extends Sprite {
     private int maxSpeed = 70;
     private int rotationSpeed = 60;
     private int acceleration = 20;
+    private int ammo = 20;
 
-    public Ship() {
+    public Ship(double posX, double posY) {
         super("ship.png");
         ogImage = getImage();
-        posX = 100;
-        posY = 100;
+        this.posX = posX;
+        this.posY = posY;
         radius = 12;
     }
 
@@ -52,5 +53,22 @@ public class Ship extends Sprite {
             rotate(rotationSpeed,dt);
         
         super.updateState(width, height, dt);
+    }
+
+    public boolean shoot() {
+        if(ammo > 0) {
+            ammo -= 1;
+            return true;
+        }
+        else
+            return false;
+    }
+
+    public void addAmmo() {
+        ammo += 10;
+    }
+
+    public int getAmmo() {
+        return ammo;
     }
 }

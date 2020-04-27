@@ -11,7 +11,6 @@ import java.awt.Color;
 
 class Sprite implements Serializable
 {
-	private static int hits;
 	private String jpgName;
 	protected double posX;
 	protected double posY;
@@ -60,24 +59,22 @@ class Sprite implements Serializable
 		posX = posX + velX*dt;
         posY = posY + velY*dt;
 
-        if(posX > width + radius - 4) {
-			posX = 0 - radius + 4;
+        if(posX > width + radius - 8) {
+			posX = 0 - radius + 8;
 		}
-        if(posX < 0 - radius + 4) {
-            posX = width + radius - 4;
+        if(posX < 0 - radius + 8) {
+            posX = width + radius - 8;
         }
-		if(posY > height + radius - 4) {
-			posY = 0 - radius + 4;
+		if(posY > height + radius - 8) {
+			posY = 0 - radius + 8 + 10;
 		}
-        if(posY < 0 - radius + 4) {
-            posY = height + radius - 4;
+        if(posY < 0 - radius + 8 + 10) {
+            posY = height + radius - 8;
 		}
 	}
 	
 	public boolean collides(Sprite s) {
 		if(Math.sqrt(Math.pow(s.posX - posX, 2)+Math.pow(s.posY-posY,2)) < (s.radius + radius)) {
-			System.out.println("hit" + hits);
-			hits++;
 			return true;
 		}
 		return false;

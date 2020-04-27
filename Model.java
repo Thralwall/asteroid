@@ -6,59 +6,69 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Random;
 
 
 class Model implements Serializable
 {
 	private static long time = System.nanoTime();
-    private Ship ship = new Ship();
+    private Ship ship = new Ship(400,400);
+    private Ammo ammo;
     private ArrayList<Asteroid> asteroids = new ArrayList<Asteroid>();
     private ArrayList<Bullet> bullets = new ArrayList<Bullet>();
     private ArrayList<Asteroid> toAdd = new ArrayList<Asteroid>();
     private int asteroidsShot;
-    private int numAsteroids;
     private double gameTime;
+    private int nextTime = 8;
+    public boolean endGame = false;
 
     Model() throws IOException {
         Random rand = new Random();
-        for(int i = 0; i < 6; i++) {
-		    asteroids.add(new Asteroid(-24,rand.nextInt(800*2+1)-800, 3));
-            numAsteroids++;
+        for(int i = 0; i < 4; i++) {
+		    asteroids.add(new Asteroid(-15,rand.nextDouble()*800, 3));
         }
-        for(int i = 0; i < 6; i++) {
-            asteroids.add(new Asteroid(rand.nextInt(800*2+1)-800,-24, 3));
-            numAsteroids++;
+        for(int i = 0; i < 4; i++) {
+            asteroids.add(new Asteroid(rand.nextDouble()*800,-7, 3));
         }
+        ammo = new Ammo(rand.nextDouble()*800, (rand.nextDouble()*790) + 10);
     }
 
     public void updateImage(Graphics g) {
         synchronized(asteroids) {
             synchronized(bullets){
                 synchronized(ship) {
-                    ship.updateImage(g);
-                    for(Asteroid asteroid : asteroids) {
-                        asteroid.updateImage(g);
-                    }
-                    for(Bullet bullet : bullets) {
-                        bullet.updateImage(g);
+                    synchronized(ammo) {
+                        if(!endGame)
+                            ship.updateImage(g);
+                        ammo.updateImage(g);
+                        for(Asteroid asteroid : asteroids) {
+                            asteroid.updateImage(g);
+                        }
+                        for(Bullet bullet : bullets) {
+                            bullet.updateImage(g);
+                        }
+                        g.setColor(new Color(168,45,0));
+                        g.setFont(new Font("Courier New", Font.BOLD, 18));
+                        String time = String.format("Time: %.2f", gameTime);
+                        String s = String.format("%12s%28s%18s", "Metors Mined: " + asteroidsShot, "Ammunition Remaining: " + ship.getAmmo(), time);
+                        g.drawString(s, 12, 24);
+                        if(endGame) {
+                            g.setFont(new Font("Courier New", Font.BOLD, 40));
+                            g.drawString("GAME OVER", 275, 300);
+                        }
                     }
                 }
             }
-            System.out.println(this);
         }
-        
-        g.setColor(Color.WHITE);
-        g.setFont(new Font("Courier New", Font.PLAIN, 18));
-        g.drawString("Number of Asteroids: " + numAsteroids, 12 , 12);
-        g.drawString("Number of Asteroids Destroyed: " + asteroidsShot, 12, 32);
-        String s = String.format("Time: %.2f", gameTime);
-        g.drawString(s, 12, 54);
     }
     
     public void shoot() {
         if(!Controller.paused){
             synchronized(bullets) {
-                bullets.add(new Bullet(ship.getPosX(), ship.getPosY(), ship.getVelX(), ship.getVelY(), ship.getAngle()));
+                synchronized(ship) {
+                    if(ship.shoot())
+                        bullets.add(new Bullet(ship.getPosX(), ship.getPosY(), ship.getVelX(), ship.getVelY(), ship.getAngle()));
+                }
             }
         }
     }
@@ -67,26 +77,35 @@ class Model implements Serializable
         if(size > 1) {
             toAdd.add(new Asteroid(posX, posY, size-1));
             toAdd.add(new Asteroid(posX, posY, size-1));
-            numAsteroids += 2;
         }
     }
     
     public void updateScene(int width, int height) {
-        if(!Controller.paused) {
+        if(!Controller.paused) { // The downside of having everything in seperate arrays: lots of synchronized statments
             synchronized(asteroids) {
                 synchronized(bullets) {
                     synchronized(ship) {
-                        double dt = ((double)(System.nanoTime()-time)/(double)1e9)*2;
-                        gameTime += dt/2.0;
-                        ship.updateState(width, height, dt);
-                        updateBullets(width, height, dt);
-                        updateAsteroids(width, height, dt);
-                        time = System.nanoTime();
-                        
-                    System.out.println(this);
+                        synchronized(ammo) { // The upside: collision detection takes less time :)
+                            double dt = ((double)(System.nanoTime()-time)/(double)1e9)*2;
+                            if(!endGame)
+                                gameTime += dt/2.0;
+                            updateShip(width, height, dt);
+                            updateBullets(width, height, dt);
+                            updateAsteroids(width, height, dt);
+                            time = System.nanoTime();
+                        }
                     }
                 }
             }
+        }
+    }
+
+    private void updateShip(int width, int height, double dt) {
+        ship.updateState(width, height, dt);
+        if(ship.collides(ammo)) {
+            Random rand = new Random();
+            ship.addAmmo();
+            ammo = new Ammo(rand.nextDouble()*width,(rand.nextDouble()*height) + 10);
         }
     }
 
@@ -112,11 +131,22 @@ class Model implements Serializable
                     destroy(asteroid.getPosX(), asteroid.getPosY(), asteroid.getSize());
                     iterA.remove();
                     iterB.remove();
-                    numAsteroids--;
                     asteroidsShot++;
                 }
             }
-            asteroid.collides(ship);
+            if(asteroid.collides(ship))
+                endGame = true;
+        }
+        if(gameTime > nextTime) {
+            Random rand = new Random();
+            double x = rand.nextDouble() * width;
+            double y = rand.nextDouble() * height;
+            while(Math.sqrt( Math.pow(ship.getPosX() - x, 2) + Math.pow(ship.getPosY() - y,2) ) < 150) {
+                x = rand.nextDouble() * width;
+                y = rand.nextDouble() * height;
+            }
+            toAdd.add(new Asteroid(x, y, 3));
+            nextTime += 8;
         }
         for(Asteroid asteroid : toAdd) {
             asteroids.add(asteroid);
@@ -131,14 +161,29 @@ class Model implements Serializable
         for(Bullet bullet : bullets)
             bullet.loadSprite();
     }
-    
-    public void initialize() {
-    	asteroids.clear();
-    	asteroids.add(new Asteroid(0,0, 3));
-    	
-    }
 
     public void setTime() {
         time = System.nanoTime();
+    }
+
+    public void reset(int width, int height) {
+        time = System.nanoTime();
+        ship = new Ship(width/2, height/2);
+        asteroids.clear();
+        bullets.clear();
+        toAdd.clear();
+        asteroidsShot = 0;
+        gameTime = 0;
+        nextTime = 8;
+        endGame = false;
+
+        Random rand = new Random();
+        for(int i = 0; i < 4; i++) {
+		    asteroids.add(new Asteroid(-15,rand.nextDouble()*800, 3));
+        }
+        for(int i = 0; i < 4; i++) {
+            asteroids.add(new Asteroid(rand.nextDouble()*800,-7, 3));
+        }
+        ammo = new Ammo(rand.nextDouble()*800, (rand.nextDouble()*790) + 10);
     }
 }
